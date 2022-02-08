@@ -3,6 +3,65 @@
 
 Bu repo vue.js kullanımına ilişkin notlar ve örnekleri içermektedir.
 
+## DIRECTIVE (YÖNERGELER)
+Yönergelerin önüne ```v-``` Vue tarafından sağlanan özel nitelikler olduklarını belirtmek için eklenir ve oluşturulan DOM'a özel reaktif davranış uygularlar.
+
+### mustache
+```mustache``` ile datada tuttuğumuz bir veriyi ekrana bastırabiliriz. Bunun için süslü parantez kullanılır.
+ÖR;
+
+```bash 
+<p>Using mustaches: {{ rawHtml }}</p>
+```
+
+### v-text
+Süslü parantezler kullanmak yerine “v-text” Directive’ini kullanarak da mesajımızı ekranda gösterebiliriz.
+
+```bash 
+<p v-text="msg">...</p>
+
+<script>
+export default {
+    name: 'TopBar',
+    props: {
+        msg: String
+    }
+};
+</script>
+```
+
+### v-html
+Eğer mesajımızın içerisinde html elementi kullanmak istiyorsak bunun için v-html kullanabiliriz. 
+
+```bash 
+<div id="example1" class="demo">
+  <p>Using mustaches: {{ rawHtml }}</p> //HTML kodları ekrana basılır.
+  <p>Using v-html directive: <span v-html="rawHtml"></span></p> //HTML kodları işlenir.
+</div>
+
+<script>
+export default {
+  data() {
+    return {
+      rawHtml: '<span style="color: red">This should be red.</span>'
+    }
+  }
+};
+</script>
+```
+
+### v-model
+### v-once
+### v-bind
+### v-if
+### v-else-if
+### v-else
+### v-show
+### v-for
+### v-on
+### v-text
+
+
 ## LIFECYCLE METODLAR
 
 ![Uygulama Ekran Görüntüsü](https://v3.vuejs.org/images/lifecycle.svg)
@@ -40,4 +99,12 @@ mounted() {
 ### activated
 ### deactivated
 
+
+
+Vue komponentinin ilk render edildiği andır.
+
+```bash 
+  npm install my-project
+  cd my-project
+```
     
