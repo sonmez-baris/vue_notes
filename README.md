@@ -3,6 +3,93 @@
 
 Bu repo vue.js kullanımına ilişkin notlar ve örnekleri içermektedir.
 
+1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-ile-calisma)
+2. [DIRECTIVE (YÖNERGELER)](#directive-y%C3%B6nergeler)
+3. [LIFECYCLE METODLAR](#lifecycle-metodlar)
+
+## KOMPONENTLER İLE ÇALIŞMA
+Bileşen sistemi, Vue'daki bir diğer önemli kavramdır, çünkü küçük, bağımsız ve genellikle yeniden kullanılabilir bileşenlerden oluşan büyük ölçekli uygulamalar oluşturmamıza izin veren bir soyutlamadır. Bunu düşünürsek, hemen hemen her tür uygulama arayüzü bir bileşen ağacına soyutlanabilir:
+Vue'da bir bileşen, esasen önceden tanımlanmış seçeneklere sahip bir örnektir. Vue'da bir bileşeni kaydetmek basittir: Bir bileşen nesnesi yaratırız ve onu ebeveynine tanımlarız:
+
+```bash 
+const TodoItem = {
+  template: `<li>This is a todo</li>`
+}
+
+// Create Vue application
+const app = Vue.createApp({
+  components: {
+    TodoItem // Register a new component
+  },
+  ... // Other properties for the component
+})
+
+// Mount Vue application
+app.mount(...)
+```
+
+Artık onu başka bir bileşenin şablonunda oluşturabilirsiniz:
+
+```bash 
+<ol>
+  <!-- Create an instance of the todo-item component -->
+  <todo-item></todo-item>
+</ol>
+```
+
+Ancak bu, her yapılacak iş için aynı metni oluşturur, bu da çok kullanışlı değildir. Ana kapsamdaki verileri alt bileşenlere aktarabilmeliyiz. Bir prop kabul etmesi için bileşen tanımını değiştirelim :
+
+const TodoItem = {
+  props: ['todo'],
+  template: `<li>{{ todo.text }}</li>`
+}
+
+Şimdi, yapılacakları her tekrarlanan alt bileşenlere v-bind ile iletebiliriz:
+
+```bash 
+<div id="todo-list-app">
+  <ol>
+    <!--
+      Now we provide each todo-item with the todo object
+      it's representing, so that its content can be dynamic.
+      We also need to provide each component with a "key",
+      which will be explained later.
+    -->
+    <todo-item
+      v-for="item in groceryList"
+      v-bind:todo="item"
+      v-bind:key="item.id"
+    ></todo-item>
+  </ol>
+</div>
+```
+
+```bash 
+const TodoItem = {
+  props: ['todo'],
+  template: `<li>{{ todo.text }}</li>`
+}
+
+const TodoList = {
+  data() {
+    return {
+      groceryList: [
+        { id: 0, text: 'Vegetables' },
+        { id: 1, text: 'Cheese' },
+        { id: 2, text: 'Whatever else humans are supposed to eat' }
+      ]
+    }
+  },
+  components: {
+    TodoItem
+  }
+}
+
+const app = Vue.createApp(TodoList)
+
+app.mount('#todo-list-app')
+```
+
 ## DIRECTIVE (YÖNERGELER)
 Yönergelerin önüne ```v-``` Vue tarafından sağlanan özel nitelikler olduklarını belirtmek için eklenir ve oluşturulan DOM'a özel reaktif davranış uygularlar.
 
@@ -299,6 +386,8 @@ mounted() {
 ### renderTriggered
 ### activated
 ### deactivated
+
+
 
 Vue komponentinin ilk render edildiği andır.
 
