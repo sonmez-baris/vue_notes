@@ -15,7 +15,7 @@ Yönergelerin önüne ```v-``` Vue tarafından sağlanan özel nitelikler oldukl
 ```
 
 ### v-text
-Süslü parantezler kullanmak yerine “v-text” Directive’ini kullanarak da mesajımızı ekranda gösterebiliriz.
+Süslü parantezler kullanmak yerine ```v-text``` Directive’ini kullanarak da mesajımızı ekranda gösterebiliriz.
 
 ```bash 
 <p v-text="msg">...</p>
@@ -31,7 +31,7 @@ export default {
 ```
 
 ### v-html
-Eğer mesajımızın içerisinde html elementi kullanmak istiyorsak bunun için v-html kullanabiliriz. 
+Eğer mesajımızın içerisinde html elementi kullanmak istiyorsak bunun için ```v-html``` kullanabiliriz. 
 
 ```bash 
 <div id="example1" class="demo">
@@ -51,16 +51,125 @@ export default {
 ```
 
 ### v-model
-### v-once
-### v-bind
-### v-if
-### v-else-if
-### v-else
-### v-show
-### v-for
-### v-on
-### v-text
+Bu directive ile form input'a ait değeri data ile bağlayabilmekteyiz. Forma girilen value böylelikle data'ya taşınır.
 
+```bash 
+<input type="text" v-model="msg">
+<p>{{ msg }}</p>
+
+<script>
+export default {
+  data() {
+    return {
+      msg: 'Hello Vue'
+    }
+  }
+};
+</script>
+```
+
+### v-once
+Bu directive ile bir veriyi sabit tutabiliriz. Yani datayı ekrana yazdırdıktan sonra, data değişse bile “v-once” kullandığımız için ekranda görünen mesaj sabit kalacaktır.
+
+```bash 
+<input type="text" v-model="msg">
+<p v-once="msg"></p>
+
+<script>
+export default {
+  data() {
+    return {
+      msg: 'Hello Vue'
+    }
+  }
+};
+</script>
+```
+
+### v-bind
+Bu directive ile attribute'lar bind edilir. Kullanıma dair örnek aşağıdadır;
+
+```bash 
+<a v-bind:href="url" v-bind:title="title">{{ title }}</a>
+<a :href="url" :title="title">{{ title }}</a>
+
+<script>
+export default {
+  data() {
+    return {
+      url: 'https://www.barissonmez.com.tr',
+      title: 'Barış Sönmez',
+    }
+  }
+};
+</script>
+```
+
+### v-if, v-else-if, v-else
+Belirlenen koşulun sağlanıp sağlanmama durumuna göre DOM üzerinde değişiklik yapmayı mümkün kılar.
+
+```bash 
+<p v-if="1 > 4">{{ condition1 }}</>
+<p v-else-if="3 > 4">{{ condition2 }}</>
+<p v-else>{{ condition3 }}</>
+
+<script>
+export default {
+  data() {
+    return {
+      condition1: 'Mesajı 1',
+      condition2: 'Mesajı 2',
+      condition3: 'Mesajı 3',
+    }
+  }
+};
+</script>
+```
+
+### v-show
+Bu directive ile bir element show/hide edilebilir. Eğer ```v-show``` değeri “true” ise element gösterilir. Eğer “false” ise elementin “display” özelliğini “none” yaparak ekranda görünmesini engellenir. ```v-if``` ile farkı ise, ```v-show``` 'da element dom üzerinde yaratılır, sadece css özelliği ile gizlenir. ```v-if``` ise elementi dom üzerinden direk kaldırır.
+
+```bash 
+<p v-show="1 > 4">{{ msg }}</>
+
+<script>
+export default {
+  data() {
+    return {
+      msg: 'Hello Vue!',
+    }
+  }
+};
+</script>
+```
+
+### v-for
+Bir array içerisindeki elemanları DOM üzerine sıra ile basmak için kullanılır. 
+
+```bash 
+<ul>
+  <li v-for="todo in todos">{{ todo }}</li>
+</ul>
+
+<script>
+export default {
+  data() {
+    return {
+      todos: ['todo1', 'todo2', 'todo3'],
+    }
+  }
+};
+</script>
+```
+
+### v-on
+Bu directive ile tanımlanan bir metod çalıştırılır. (onclick, onchange vb...).
+
+### v-slot
+### v-pre
+### v-cloak
+### v-memo
+### v-is
 
 ## LIFECYCLE METODLAR
 
