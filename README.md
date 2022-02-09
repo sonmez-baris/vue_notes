@@ -3,7 +3,7 @@
 
 Bu repo vue.js kullanımına ilişkin notlar ve örnekleri içermektedir.
 
-1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-ile-calisma)
+1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-i̇le-çalişma)
 2. [DIRECTIVE (YÖNERGELER)](#directive-y%C3%B6nergeler)
 3. [LIFECYCLE METODLAR](#lifecycle-metodlar)
 
@@ -386,13 +386,3 @@ mounted() {
 ### renderTriggered
 ### activated
 ### deactivated
-
-
-
-Vue komponentinin ilk render edildiği andır.
-
-```bash 
-  npm install my-project
-  cd my-project
-```
-    
