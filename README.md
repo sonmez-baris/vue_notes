@@ -31,7 +31,7 @@ export default {
 ```
 
 ### v-html
-Eğer mesajımızın içerisinde html elementi kullanmak istiyorsak bunun için ```v-html``` kullanabiliriz. 
+Eğer mesajımızın içerisinde html elementi kullanmak istiyorsak bunun için ```v-html``` kullanabiliriz. İçeriğin düz HTML olarak eklendiğini unutmayın; bunlar Vue şablonları olarak derlenmeyecektir.
 
 ```bash 
 <div id="example1" class="demo">
@@ -105,6 +105,44 @@ export default {
 </script>
 ```
 
+```bash 
+<!-- Bir attr bağla -->
+<img v-bind:src="imageSrc" />
+
+<!-- Dinamik bir attr -->
+<button v-bind:[key]="value"></button>
+
+<!-- Kısa kullanım -->
+<img :src="imageSrc" />
+
+<!-- Dinamik bir attr için kısa kullanım -->
+<button :[key]="value"></button>
+
+<!-- Satır içinde + parametresi ile dize birleştirme -->
+<img :src="'/path/to/images/' + fileName" />
+
+<!-- class bağlama -->
+<div :class="{ red: isRed }"></div>
+<div :class="[classA, classB]"></div>
+<div :class="[classA, { classB: isB, classC: isC }]"></div>
+
+<!-- style bağlama -->
+<div :style="{ fontSize: size + 'px' }"></div>
+<div :style="[styleObjectA, styleObjectB]"></div>
+
+<!-- Bir attr nesnesini bağlama -->
+<div v-bind="{ id: someProp, 'other-attr': otherProp }"></div>
+
+<!-- prop bağlama. "prop" komponentlerim içinde bildirilmelidir. -->
+<my-component :prop="someThing"></my-component>
+
+<!-- Ana propları, child ile ortak kullanmak -->
+<child-component v-bind="$props"></child-component>
+
+<!-- XLink -->
+<svg><a :xlink:special="foo"></a></svg>
+```
+
 ### v-if, v-else-if, v-else
 Belirlenen koşulun sağlanıp sağlanmama durumuna göre DOM üzerinde değişiklik yapmayı mümkün kılar.
 
@@ -162,14 +200,68 @@ export default {
 </script>
 ```
 
+Alternatif olarak, index (veya bir objed kullanılıyorsa key) için bir takma ad da belirtebilirsiniz:
+
+```bash 
+<div v-for="(item, index) in items"></div>
+<div v-for="(value, key) in object"></div>
+<div v-for="(value, name, index) in object"></div>
+```
+
+Varsayılan davranışı ```v-for```, öğeleri hareket ettirmeden yerinde düzeltmeye çalışır. Öğeleri yeniden sıralamaya zorlamak için ```:key``` özel öznitelikle bir sıralama ipucu sağlamalısınız:
+
+```bash 
+<div v-for="item in items" :key="item.id">
+  {{ item.text }}
+</div>
+```
 ### v-on
 Bu directive ile tanımlanan bir metod çalıştırılır. (onclick, onchange vb...).
 
 ### v-slot
+Komponentlerin içeriklerinin dinamik olarak değiştiği durumlarda ve birden fazla elementin aynı anda gönderilmesi veya component içindeki elementlerin sadece bazılarının aynı anda gönderilmesi gibi işlemlerde slot kullanılır. Kısaca # ile ifade edilebilir.
+
+```bash 
+<base-layout>
+  <template v-slot:header>
+    <h1>H1 Heading</h1>
+  </template>
+
+  <p>A paragraph.</p>
+
+  <template #:footer>
+    <p>A footer info.</p>
+  </template>
+</base-layout>
+```
+
 ### v-pre
+Empty directive olarak ifade edilebilir. Herhangi bir expression almaz. v-pre kendi elementi ve alt elementler için derlemenin (compilation) es geçilmesini sağlar. Aşağıdaki gibi bir kullanımda mustaches içeriği uygulanmayacak ve ifade olduğu haliyle tutulacaktır.
+
+```bash 
+<p v-pre>{{ selected }}</p>
+```
+
 ### v-cloak
+Bir diğer empty directive olan v-cloak ViewModel derlemeyi tamamlayana kadar eklendiği element üzerinde kalır. Bir CSS tanımı ile birlikte (örneğin bir div için) derleme süreci tamamlanana, ViewModel hazır olana kadar mustaches ifadelerin gizlenmesi sağlanabilir.
+
+```bash 
+[v-cloak] {
+ display:none
+}
+```
+
 ### v-memo
+Template'in sub tree'sini hafızaya alır. Hem elemanlarda hem de komponentlerde kullanılabilir. Bu directive, hafızaya alınan bağlılık değerlerini karşılaştırmak için sabit uzunlukta bir dizi bekler. Dizideki her değer son oluşturma ile aynıysa, tüm sub-tree için güncellemeler atlanır. Örneğin:
+
+```bash 
+<div v-memo="[valueA, valueB]">
+  ...
+</div>
+```
+
 ### v-is
+Vue 3.1.0 ile kullanımdan kaldırıldı.
 
 ## LIFECYCLE METODLAR
 
@@ -207,8 +299,6 @@ mounted() {
 ### renderTriggered
 ### activated
 ### deactivated
-
-
 
 Vue komponentinin ilk render edildiği andır.
 
