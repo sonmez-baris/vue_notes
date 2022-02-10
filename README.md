@@ -1,6 +1,6 @@
 ## Description
 
-![https://img.shields.io/badge/Vue.js->=3-41B883](https://img.shields.io/badge/Vue.js->=3-41B883)
+![https://img.shields.io/badge/Vue.js->=3-41B883](https://img.shields.io/badge/Vue.js->=3-41B883) ![https://img.shields.io/github/last-commit/sonmez-baris/vue_notes](https://img.shields.io/github/last-commit/sonmez-baris/vue_notes)
 
 This repository has Turkish notes, translates, collections, quotes and examples about vue3. AIt is not yet completed and is being updated.
 
