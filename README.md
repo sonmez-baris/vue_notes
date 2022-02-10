@@ -1,7 +1,10 @@
+## Description
+
+![https://img.shields.io/badge/Vue.js->=3-41B883](https://img.shields.io/badge/Vue.js->=3-41B883)
+
+This repository has Turkish notes, translates, collections, quotes and examples about vue3. AIt is not yet completed and is being updated.
 
 # VUE.JS V3 NOTLARI
-
-Bu repo vue.js kullanımına ilişkin notlar, çeviriler, derlemeler, alıntılar ve örnekleri içermektedir. Alıntılanan kaynaklar sonda belirtilmiştir.
 
 1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-i̇le-çalişma)
 2. [DIRECTIVE (YÖNERGELER)](#directive-y%C3%B6nergeler)
