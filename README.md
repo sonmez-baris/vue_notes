@@ -1,11 +1,13 @@
 
 # VUE.JS V3 NOTLARI
 
-Bu repo vue.js kullanımına ilişkin notlar ve örnekleri içermektedir.
+Bu repo vue.js kullanımına ilişkin notlar, çeviriler, derlemeler, alıntılar ve örnekleri içermektedir. Alıntılanan kaynaklar sonda belirtilmiştir.
 
 1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-i̇le-çalişma)
 2. [DIRECTIVE (YÖNERGELER)](#directive-y%C3%B6nergeler)
 3. [LIFECYCLE METODLAR](#lifecycle-metodlar)
+4. [COMPUTED PROPERTIES AND WATCHERS](#computed-properties-and-watchers)
+5. [SINIF VE STİL BAĞLANTILARI](#sinif-ve-sti%CC%87l-ba%C4%9Flantilari)
 
 ## KOMPONENTLER İLE ÇALIŞMA
 Bileşen sistemi, Vue'daki bir diğer önemli kavramdır, çünkü küçük, bağımsız ve genellikle yeniden kullanılabilir bileşenlerden oluşan büyük ölçekli uygulamalar oluşturmamıza izin veren bir soyutlamadır. Bunu düşünürsek, hemen hemen her tür uygulama arayüzü bir bileşen ağacına soyutlanabilir:
@@ -302,6 +304,70 @@ Varsayılan davranışı ```v-for```, öğeleri hareket ettirmeden yerinde düze
   {{ item.text }}
 </div>
 ```
+
+Örnekler;
+
+```bash 
+<ul id="v-for-object" class="demo">
+  <li v-for="(value, name) in myObject">
+    {{ name }}: {{ value }}
+  </li>
+</ul>
+
+Vue.createApp({
+  data() {
+    return {
+      myObject: {
+        title: 'How to do lists in Vue',
+        author: 'Jane Doe',
+        publishedAt: '2020-03-22'
+      }
+    }
+  }
+}).mount('#v-for-object')
+```
+
+```bash 
+<li v-for="(value, name, index) in myObject">
+  {{ index }}. {{ name }}: {{ value }}
+</li>
+
+Vue.createApp({
+  data() {
+    return {
+      myObject: {
+        title: 'How to do lists in Vue',
+        author: 'Jane Doe',
+        publishedAt: '2020-03-22'
+      }
+    }
+  }
+}).mount('#v-for-object')
+```
+
+**Filtrelenmiş/Sıralanmış Sonuçları Görüntüleme**
+
+Bazen, orijinal verileri gerçekten değiştirmeden veya sıfırlamadan bir dizinin filtrelenmiş veya sıralanmış bir sürümünü görüntülemek isteriz. Bu durumda, filtrelenmiş veya sıralanmış diziyi döndüren hesaplanmış bir özellik oluşturabilirsiniz.
+
+```bash 
+<li v-for="n in evenNumbers" :key="n">{{ n }}</li>
+data() {
+  return {
+    numbers: [ 1, 2, 3, 4, 5 ]
+  }
+},
+computed: {
+  evenNumbers() {
+    return this.numbers.filter(number => number % 2 === 0)
+  }
+}
+```
+**ÖNEMLİ UYARI**
+
+```v-if``` ve ```v-for```'un birlikte kullanılmasının önerilmediğini unutmayın. 
+
+Aynı alanda var olduklarında ```v-if```, ```v-for```'dan daha yüksek önceliğe sahiptir. Bu, ```v-if``` koşulunun ```v-for``` kapsamındaki değişkenlere erişimi olmayacağı anlamına gelir. Çözüm ve örnek kullanım için [TIKLAYINIZ](https://v3.vuejs.org/guide/list.html#v-for-with-v-if).
+
 ### v-on
 Bu directive ile tanımlanan bir metod çalıştırılır. (onclick, onchange vb...).
 
@@ -386,3 +452,231 @@ mounted() {
 ### renderTriggered
 ### activated
 ### deactivated
+
+
+## COMPUTED PROPERTIES AND WATCHERS
+
+Vue Lifecycle dahilinde yer alan computed, render işlemi tamamlandıktan sonraki andır ve computed adında bir metot oluşturup kullanılır. 
+
+```bash 
+<div id="example">
+  {{ message.split('').reverse().join('') }}
+</div>
+```
+
+Yukarıdaki kullanımda, message alındığında bir dizi işlemden geçirilmekte; ```split()``` ile parçalara ayrılmakta, ```reverse()``` ile karakterlerin yerleri değiştirilmekte ve ```join()``` ile yerleri değiştirilen karakterler birleştirilmekte. Sonuç olarak, message tanımı, örneğin ```data { message: 'Hello' }``` olsun, ```olleH``` haline getirilerek ekranda gösterilmekte. Kapsamlı bir yapı içerisinde, template oluştururken veya düzenlerken bu ve benzeri kullanımlar kontrolü güç bir hale gelebilir. Bu tür durumlarda, gerekli işlemler computed içerisinde kolaylıkla tanımlanabilirler. Aynı işlemi şimdi yeniden ele alalım.
+
+```bash 
+const app = {
+  data() {
+    return {
+      message: 'Hello'
+    }
+  },
+  computed: {
+    reversedMessage() {
+      return this.message.split('').reverse().join('');
+    }
+  }
+}
+Vue.createApp(app).mount('#message');
+```
+
+Çıktımızın aynı olmasına karşın, önceki kullanımdan farklı olarak HTML etiketi içerisinde ```message``` yerine ```reversedMessage``` kullanmamız gerekmekte. Bu sayede, artık veri değiştikçe ilgili alanın da değiştiğini görebiliriz.
+
+Computed property ile template içerisinde normal property işlemlerinde olduğu gibi data-bind işlemleri yapmak mümkün. Çünkü, Vue örnek üzerinden anlatmak gerekirse, computed olarak tanımlı reversedMessage ile message öğesi birbirine bağlı. Bu sayede message değiştiğinde reversedMessage ve ona bağlı olan tüm alanlar da güncellenir. Bu bağımlılık bildirimsel olarak (declaratively) gerçekleştirilir.
+
+Computed property varsayılan olarak yalnızca getter tanımlıdır, ancak ihtiyacınız olduğunda setter olarak da tanımlanabilir: ```{ get: Function, set: Function }```
+
+```bash 
+computed: {
+  fullName: {
+    // getter
+    get: function () {
+      return this.firstName + ' ' + this.lastName
+    },
+    // setter
+    set: function (newValue) {
+      var names = newValue.split(' ')
+      this.firstName = names[0]
+      this.lastName = names[names.length - 1]
+    }
+  }
+}
+```
+
+Console üzerinden ```fullName = 'John Doe'``` tanımı yaptığımızda setter ```firstName``` ve ```lastName``` için de güncelleme geçecektir.
+
+### Computed Property İle Methods Karşılaştırması
+v-model direktifi açıklamasında da bahsi geçtiği üzere computed ve methods‘un işlev anlamında örtüştüğü noktalar olsalar da temel ve aslında önemli bir farklılık da mevcut5. computed property bağlı olduğu değişkeni ekranda sunarken ön belleğe (cache) de alır ve bu değişken değişmediği sürece tekrar hesaplama yapmaz. method kullanımında ise hesaplama yinelenir ve son değer ön bellekleme olmadan ekrana yansıtılır. Özetle, method re-render gerçekleşen her durumda yeniden çalıştırılır, ancak computed kapsamındaki işlemler yinelenmez.
+
+```bash 
+<p>{{ reverseMessage() }}</p>
+```
+
+```bash 
+methods: {
+  reverseMessage() {
+    return this.message.split('').reverse().join('')
+  }
+}
+```
+Tanımlandığı alan dışında, yazımda herhangi bir farklılık olmadı ve ekrana yansıyan ifade de aynı.
+
+### Computed Property İle Watched Property Karşılaştırması
+VueJS, data değişikliklerini gözlemlemek ve bunlara tepki vermek için watch properties olarak ifade edilen daha genel bir yola daha sahiptir. Lifecycle içerisinde watch component var olduğu sürede, o component içeriğindeki datalarla ilgili değişiklikleri yakalamızı sağlar. Örneğin, bir veri bir başka veriye bağlı ise ve bağlı olduğu veride değişiklik söz konusu olmuşsa watch (watcher / watched prop) kullanımı tercih edilebilir. Şöyle bir örneğimiz olsun;
+
+```bash 
+<div id="app">
+ <p v-html="welcome"></p>
+ <ul>
+  <li>Name: <strong>{{ firstName }}</strong></li>
+  <li>Surname: <strong>{{ lastName }}</strong></li>
+  <li>Full Name: <strong>{{ fullName }}</strong></li>
+ </ul>
+</div>
+
+<script>
+const app = Vue.createApp({
+  data() {
+    return {
+      message: `It's a New Day!`,
+      firstName: 'John',
+      lastName: 'Doe',
+      fullName: 'John Doe'
+    }
+  },
+  computed: {
+    welcome() {
+      return 'Hello' + ' <strong>' + this.fullName + '</strong>, ' + this.message
+    }
+  },
+  watch: {
+    message(val) {
+      this.message = val
+    },
+    firstName(val) {
+      this.fullName = val + ' ' + this.lastName
+    },
+    lastName(val) {
+      this.fullName = this.firstName + ' ' + val
+    }
+  }
+}).mount('#app');
+</script>
+```
+
+Console üzerinden app.lastName = 'Wick' tanımı yapalım. Bu durumda hem fullName hem de message içeriğinin değiştiğini görebilirsiniz. Watch alanını temizleyip aynı işlemi gerçekleştirdiğinizde sadece ilgili veri alanı güncellenecektir.
+
+Özetlemek gerekirse, computed properties diğer verilerden türetilmiş yeni veriler oluşturmak istendiğinde öne çıkmaktadır7. Bu verileri dönüştürmek (transform), filtrelemek (filter) ya da değiştirmek (manipulate) istediğimizde rahatlıkla kullanabiliriz. Computed properties her zaman bir değer döndürmek (return) ve eş zamanlı olmak durumundadır. Diğer yandan, bir bileşenin (component) prop aldığını ve bu prop içeriğinin her değişmesi durumunda bir AJAX isteği gerçekleştirilmesi gerektiğini düşünün. Bu durumda Watch property ile verideki değişikliği izlemek çok daha isabetli bir karar olacaktır.
+
+
+## SINIF VE STİL BAĞLANTILARI
+Data bağlama için yaygın bir ihtiyaç, bir öğenin class yapısı ve onun satır içi style değerlerini değiştirmektir. Her ikisi de birer attr olduğundan, ```v-bind``` bunları işlemek için kullanılabilir. 
+
+Sınıfları dinamik olarak değiştirmek için bir nesneyi :class'a (v-bind:class'ın kısaltması) iletebiliriz:
+
+```bash 
+<div :class="{ active: isActive }"></div>
+```
+
+Nesnede daha fazla alan bulundurarak birden çok sınıf arasında geçiş yapabilirsiniz. Ayrıca, :class yönergesi, düz class niteliği ile birlikte var olabilir;
+
+```bash 
+<div
+  class="static"
+  :class="{ active: isActive, 'text-danger': hasError }"
+></div>
+
+data() {
+  return {
+    isActive: true,
+    hasError: false
+  }
+}
+```
+
+Sonuç olarak şöyle bir çıktı alınır;
+
+```html 
+<div class="static active"></div>
+```
+
+```isActive``` veya ```hasError``` değiştiğinde, sınıf listesi buna göre güncellenecektir. Örneğin, ```hasError``` true olursa, sınıf listesi ```statik active text-danger``` olur.
+
+**Ayrıca bağlı nesnenin doğrudan DOM üzerinde tanımlanması gerekmez.**
+
+```bash 
+<div :class="classObject"></div>
+
+data() {
+  return {
+    classObject: {
+      active: true,
+      'text-danger': false
+    }
+  }
+}
+```
+
+Bu aynı sonucu verecektir. Ayrıca bir nesne döndüren hesaplanmış bir özelliğe de (computed property) bağlanabiliriz. Bu yaygın ve güçlü bir kalıptır:
+
+```bash 
+data() {
+  return {
+    isActive: true,
+    error: null
+  }
+},
+computed: {
+  classObject() {
+    return {
+      active: this.isActive && !this.error,
+      'text-danger': this.error && this.error.type === 'fatal'
+    }
+  }
+}
+```
+
+Bir sınıf listesini uygulamak için bir diziyi :class öğesine iletebiliriz:
+
+```bash 
+<div :class="[activeClass, errorClass]"></div>
+
+data() {
+  return {
+    activeClass: 'active',
+    errorClass: 'text-danger'
+  }
+}
+```
+
+### style kullanımı
+Style kullanımı da son derece basittir. JS nesnesi olması dışında tamamen CSS yapısı hakimdir.
+
+```bash 
+<div :style="{ color: activeColor, fontSize: fontSize + 'px' }"></div>
+
+data() {
+  return {
+    activeColor: 'red',
+    fontSize: 30
+  }
+}
+```
+
+class bağlarken kullandığımız birçok yöntem style içinde geçerlidir.
+
+Çoklu style değerleri ile çalışırken;
+
+```bash 
+<div :style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
+```
+
+
+
+
+## KAYNAKÇA
+
+- [https://v3.vuejs.org/guide/](https://v3.vuejs.org/guide/)
+- [https://ceaksan.com/](https://ceaksan.com/)
