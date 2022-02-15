@@ -9,8 +9,9 @@ This repository has Turkish notes, translates, collections, quotes and examples 
 1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-i̇le-çalişma)
 2. [DIRECTIVE (YÖNERGELER)](#directive-y%C3%B6nergeler)
 3. [LIFECYCLE METODLAR](#lifecycle-metodlar)
-4. [COMPUTED PROPERTIES AND WATCHERS](#computed-properties-and-watchers)
-5. [SINIF VE STİL BAĞLANTILARI](#sinif-ve-sti%CC%87l-ba%C4%9Flantilari)
+4. [REAKTİVİTENİN TEMELLERİ](#reactivitenin-temelleri)
+5. [COMPUTED PROPERTIES AND WATCHERS](#computed-properties-and-watchers)
+6. [SINIF VE STİL BAĞLANTILARI](#sinif-ve-sti%CC%87l-ba%C4%9Flantilari)
 
 ## KOMPONENTLER İLE ÇALIŞMA
 Bileşen sistemi, Vue'daki bir diğer önemli kavramdır, çünkü küçük, bağımsız ve genellikle yeniden kullanılabilir bileşenlerden oluşan büyük ölçekli uygulamalar oluşturmamıza izin veren bir soyutlamadır. Bunu düşünürsek, hemen hemen her tür uygulama arayüzü bir bileşen ağacına soyutlanabilir:
@@ -106,6 +107,8 @@ Yönergelerin önüne ```v-``` Vue tarafından sağlanan özel nitelikler oldukl
 <p>Using mustaches: {{ rawHtml }}</p>
 ```
 
+Burada unutulmaması gereken süslü parantezler ile HTML etiketlerini bastıramadığımız.
+
 ### v-text
 Süslü parantezler kullanmak yerine ```v-text``` Directive’ini kullanarak da mesajımızı ekranda gösterebiliriz.
 
@@ -197,6 +200,8 @@ export default {
 </script>
 ```
 
+Ayrıca ```v-bind``` yerine kısa kullanım olarak ```:``` da attribute'lar önünde kullanılır.
+
 ```bash 
 <!-- Bir attr bağla -->
 <img v-bind:src="imageSrc" />
@@ -234,6 +239,43 @@ export default {
 <!-- XLink -->
 <svg><a :xlink:special="foo"></a></svg>
 ```
+
+***Boolean Öznitelikleri***
+Boolean öznitelikleri , bir öğe üzerindeki varlığına göre doğru/yanlış değerleri gösterebilen özniteliklerdir. Örneğin, disableden sık kullanılan boole özniteliklerinden biridir.
+
+```v-bind``` bu durumda biraz farklı çalışır:
+
+```bash 
+<button :disabled="isButtonDisabled">Button</button>
+```
+
+Öznitelik , doğruluk değerine sahipse disabled dahil edilir. Yoksa dahil edilmez. 
+
+***JavaScript İfadelerini Kullanma***
+Şablonlara basit özellik anahtarları ile bağlanmak dışında, tüm veri bağlamalarında JavaScript ifadelerinin tam gücü de desteklemektedir:
+
+```bash 
+{{ number + 1 }}
+
+{{ ok ? 'YES' : 'NO' }}
+
+{{ message.split('').reverse().join('') }}
+
+<div :id="`list-${id}`"></div>
+```
+
+Bu ifadeler, geçerli bileşen örneğinin veri kapsamında JavaScript olarak değerlendirilecektir.
+
+Vue şablonlarında JavaScript ifadeleri süslü parantez içinde ve v- directive'ler de kullanılabilir.
+
+***Modifiers (Değiştiriciler)***
+
+Değiştiriciler, bir yönergenin özel bir şekilde bağlanması gerektiğini belirten, nokta ile gösterilen özel son eklerdir. Örneğin, değiştirici, ```.prevent``` ile yönergeye tetiklenen olayı çağırmasını söyler: ```:v-onevent.preventDefault()```
+
+```bash 
+<form @submit.prevent="onSubmit">...</form>
+```
+
 
 ### v-if, v-else-if, v-else
 Belirlenen koşulun sağlanıp sağlanmama durumuna göre DOM üzerinde değişiklik yapmayı mümkün kılar.
@@ -456,6 +498,77 @@ mounted() {
 ### activated
 ### deactivated
 
+## REAKTİVİTENİN TEMELLERİ
+
+Bir bileşen örneğine yöntemler eklemek için methodsseçeneği kullanırız. Bu, istenen yöntemleri içeren bir nesne olmalıdır:
+
+```bash 
+<button @click="increment">{{ count }}</button>
+
+<script>
+export default {
+  data() {
+    return {
+      count: 0
+    }
+  },
+  methods: {
+    increment() {
+      this.count++
+    }
+  },
+  mounted() {
+    // methods can be called in lifecycle hooks, or other methods!
+    this.increment()
+  }
+}
+</script>
+```
+
+***DOM Güncelleme Zamanlaması***
+
+!!! Reaktif durumu değiştirdiğinizde, DOM otomatik olarak güncellenir. Ancak, DOM güncellemelerinin eşzamanlı olarak uygulanmadığına dikkat edilmelidir. Bunun yerine, Vue, yaptığınız durum değişiklikleri ne olursa olsun her bileşenin yalnızca bir kez güncellenmesi gerektiğinden emin olmak için güncelleme döngüsündeki "bir sonraki onay işaretine" kadar arabelleğe alır.
+
+Bir durum değişikliğinden sonra DOM güncellemesinin tamamlanmasını beklemek için ```nextTick()``` global API'sini kullanabilirsiniz:
+
+```bash
+import { nextTick } from 'vue'
+
+export default {
+  methods: {
+    increment() {
+      this.count++
+      nextTick(() => {
+        // access updated DOM
+      })
+    }
+  }
+}
+```
+
+***Derin Reaktivite***
+
+Vue'da durum varsayılan olarak derinden reaktiftir. Bu, iç içe geçmiş nesneleri veya dizileri değiştirdiğinizde bile değişikliklerin algılanmasını bekleyebileceğiniz anlamına gelir:
+
+```bash
+export default {
+  data() {
+    return {
+      obj: {
+        nested: { count: 0 },
+        arr: ['foo', 'bar']
+      }
+    }
+  },
+  methods: {
+    mutateDeeply() {
+      // these will work as expected.
+      this.obj.nested.count++
+      this.obj.arr.push('baz')
+    }
+  }
+}
+```
 
 ## COMPUTED PROPERTIES AND WATCHERS
 
@@ -675,9 +788,6 @@ class bağlarken kullandığımız birçok yöntem style içinde geçerlidir.
 ```bash 
 <div :style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
 ```
-
-
-
 
 ## KAYNAKÇA
 
