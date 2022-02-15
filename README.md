@@ -9,7 +9,7 @@ This repository has Turkish notes, translates, collections, quotes and examples 
 1. [KOMPONENTLER İLE ÇALIŞMA](#komponentler-i̇le-çalişma)
 2. [DIRECTIVE (YÖNERGELER)](#directive-y%C3%B6nergeler)
 3. [LIFECYCLE METODLAR](#lifecycle-metodlar)
-4. [REAKTİVİTENİN TEMELLERİ](#reactivitenin-temelleri)
+4. [REAKTİVİTENİN TEMELLERİ](#reaktivitenin-temelleri)
 5. [COMPUTED PROPERTIES AND WATCHERS](#computed-properties-and-watchers)
 6. [SINIF VE STİL BAĞLANTILARI](#sinif-ve-sti%CC%87l-ba%C4%9Flantilari)
 
@@ -161,6 +161,24 @@ export default {
   }
 };
 </script>
+```
+
+```bash 
+<input
+  type="checkbox"
+  v-model="toggle"
+  true-value="yes"
+  false-value="no" />
+```
+
+```true-value``` ve ```false-value``` yalnızca ile çalışan Vue'ya özgü niteliklerdir. Burada toggle özelliğin değeri 'yes', kutu işaretlendiğinde ve 'no' işaretlenmediğinde ayarlanır. Bunları aşağıdakileri kullanarak ```v-bind``` dinamik değerlere de bağlayabilirsiniz:
+
+```bash 
+<input
+  type="checkbox"
+  v-model="toggle"
+  :true-value="dynamicTrueValue"
+  :false-value="dynamicFalseValue" />
 ```
 
 ### v-once
