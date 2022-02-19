@@ -588,6 +588,26 @@ export default {
 }
 ```
 
+***Filter ile ilgili basit bir örnek***
+
+```bash
+export default {
+  data() {
+    return {
+      search: "",
+      itemList: ["elma", "armut", "kiraz", "çilek"],
+      filteredList: []
+    }
+  },
+  methods: {
+    searchList(){
+      this.filteredList = this.itemList.filter((i) => i.includes(this.search));
+    }
+  }
+}
+```
+Yukarıdaki örnek ile birlikte, bir array içinde yer alan itemler filtrelenerek, arama sonucuna göre yeni bir array içine kaydedildi.
+
 ## COMPUTED PROPERTIES AND WATCHERS
 
 Vue Lifecycle dahilinde yer alan computed, render işlemi tamamlandıktan sonraki andır ve computed adında bir metot oluşturup kullanılır. 
