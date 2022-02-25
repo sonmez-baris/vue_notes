@@ -96,6 +96,37 @@ const app = Vue.createApp(TodoList)
 app.mount('#todo-list-app')
 ```
 
+### String Template Component
+
+```bash 
+const app = Vue.createApp({
+  data(){
+    return{};
+  }
+})
+
+app.component({
+  data(){
+    return{
+      counter: 0;
+    }
+  },
+  template: `
+    <div class="container">
+      <h3 class="mb-2">{{ counter }}</h3>
+      <button @click="counter++">+</button>
+      <button @click="counter--">-</button>
+    </div> 
+  `
+}).mount("#app");
+```
+
+String Template Component yapıları kullanışlı yapılar değildir. Küçük bir widget için belki kullanılabilir. Fakat vue.js üzerinden çalışan yapılar için iyi bir geliştirme ortamı sunmazlar. 
+
+### Single File Component
+
+
+
 ## DIRECTIVE (YÖNERGELER)
 Yönergelerin önüne ```v-``` Vue tarafından sağlanan özel nitelikler olduklarını belirtmek için eklenir ve oluşturulan DOM'a özel reaktif davranış uygularlar.
 
