@@ -483,7 +483,6 @@ Vue 3.1.0 ile kullanımdan kaldırıldı.
 
 ![Uygulama Ekran Görüntüsü](https://v3.vuejs.org/images/lifecycle.svg)
 
-
 ### beforeCreate
 Bu hook metodu, örnek başlatıldıktan hemen sonra, observation ve event/watcher setup'dan önce eşzamanlı olarak çağrılır.
 
@@ -492,6 +491,9 @@ Bu hook metodu, örnek oluşturulduktan sonra eşzamanlı olarak çağrılır. B
 
 ### beforeMount
 Mount başlamadan hemen önce çağrılır. Örnek henüz sanal DOM'a yerleştirilmemiştir.
+Bu hook çağrıldığında, bileşen reaktif durumunu ayarlamayı tamamladı, ancak henüz hiçbir DOM oluşturulmadı. 
+Bu hook, server-side rendering sırasında çağrılmaz.
+
 
 ### mounted
 Örnek mount işlemi tamamlandıktan sonra çağrılır. Vue.js özel ```app.mount``` yeni oluşturulan ```vm.$el``` e devredilmiştir. Ayrıca artık tüm componentler etkileşime hazır vaziyettedir.
@@ -506,15 +508,73 @@ mounted() {
 }
 ```
 
+Bu hook, server-side rendering sırasında çağrılmaz.
+
 ### beforeUpdate
+Bileşen, reaktif bir durum değişikliği nedeniyle DOM güncellenmeden hemen önce çağrılır.
+Bu hook, Vue DOM'u güncellemeden önce DOM durumuna erişmek için kullanılabilir. Bu hook içindeki bileşen durumunu değiştirmek de güvenlidir.
+Bu hook, server-side rendering sırasında çağrılmaz.
+
 ### updated	
+Bileşen, reaktif durum değişikliği nedeniyle DOM güncellendikten sonra çağrılır.
+Bu hook, bileşenin farklı durum değişikliklerinden kaynaklanabilecek herhangi bir DOM güncellemesinden sonra çağrılır. Belirli bir durum değişikliğinden sonra güncellenen DOM'a erişmeniz gerekiyorsa, bunun yerine nextTick()'i kullanın.
+Bu hook, server-side rendering sırasında çağrılmaz.
+
 ### beforeUnmount
+Bir bileşen örneğinin bağlantısı kaldırılmadan hemen önce çağrılır.
+Bu hook çağrıldığında, bileşen örneği hala tamamen işlevseldir.
+Bu hook, server-side rendering sırasında çağrılmaz.
+
 ### unmounted
-### errorCaptured
-### renderTracked
-### renderTriggered
-### activated
-### deactivated
+Bileşenin bağlantısı kaldırıldıktan sonra çağrılır.
+Zamanlayıcılar, DOM olay dinleyicileri veya sunucu bağlantıları gibi elle oluşturulan yan etkileri temizlemek için bu hooku kullanın.
+Bu hook, server-side rendering sırasında çağrılmaz.
+
+```bash 
+const app = Vue.createApp({
+  data(){
+    return{
+      title: "Deneme",
+      itemList = []
+    };
+  },
+  beforeCreate(){
+    console.log("beforeCreate çalıştı");
+  },
+  created(){
+    console.log("created çalıştı");
+    setTimeout(() => {
+      this.itemList = [1,2,3,4,5];
+    }, 2000);
+    setTimeout(() => {
+      this.title = "Yeni Başlık";
+    }, 3000);
+  },
+  beforeMount(){
+    console.log("beforeMount çalıştı");
+  }
+  mounted(){
+    console.log("mounted çalıştı");
+  }
+  beforeUpdate(){
+    console.log("beforeUpdate çalıştı");
+  }
+  updated(){
+    console.log("updated çalıştı");
+  }
+  beforeUnmount(){
+    console.log("beforeUnmount çalıştı");
+  }
+  unmounted(){
+    console.log("unmounted çalıştı");
+  }
+})
+```
+
+### NOTLAR
+
+1. Bir uygulama ilk çalıştığında sırasıyla ```beforeCreated``` , ```created``` , ```beforeMount``` , ```mounted``` yaşam döngüleri çalışır.
+
 
 ## REAKTİVİTENİN TEMELLERİ
 
