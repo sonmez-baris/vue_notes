@@ -125,6 +125,12 @@ String Template Component yapıları kullanışlı yapılar değildir. Küçük 
 
 ### Single File Component
 
+Bu yöntem, uygulama içinde tekrar eden, başka alanlarda kullanılabilecek olan tüm yapıları, küçük parçalara bölerek kullanma esasına dayanır. Oluşturulan komponentler, ```@/components``` altında yer alır ve ```@import CompopnentName from "@/components/ComponentName"``` şeklinde ilgili sayfaya dahil edilir.
+
+Komponentler kod tekrarını engelleyen ve içinde HTML kodlarını bulunduran yapılardır. Belirli dinamiklere göre içeriği değiştirilebilir.
+
+Komponentleri dinamik olarak kullanmak için dışarıdan kendilerine veri göndermek gerekir. Bu duruma "Veri İletişimi" adı verilir. Veri iletişimi birkaç yolla gerçekleştirilebilir. ```Parent -> Child (Props)``` (İçerisinde farklı farklı komponentleri barındıran ana komponenttir.) ve ```Child -> Parent (Custom Event)``` (Bir komponent içerisinde tanımlanmış başka bir komponenttir.) 
+
 
 
 ## DIRECTIVE (YÖNERGELER)
